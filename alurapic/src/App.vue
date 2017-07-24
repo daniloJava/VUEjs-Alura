@@ -1,60 +1,89 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://gitter.im/vuejs/vue" target="_blank">Gitter Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
+
+  <div class="corpo" >
+    <h1 class="centralizado" >{{ titulo }}</h1>
+
+    <input type="search" class="filtro" v-on:input="filtro = $event.target.value" placeholder="filtre pelo título da foto">
+
+    <ul class="lista-fotos">
+
+        <li class="lista-fotos-item" v-for="foto of fotosComFiltro">
+          <meu-painel :titulo="foto.titulo">
+            <imagem-responsiva :url="foto.url" :titulo="foto.titulo"/>
+          </meu-painel>
+        </li>
+        
     </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+
   </div>
+
 </template>
 
 <script>
+
+import Painel from './components/shared/painel/Painel.vue';
+import ImagemResponsiva from './components/shared/imagem-responsiva/ImagemResponsiva.vue'
+
 export default {
-  name: 'app',
-  data () {
+
+  components: {
+
+    'meu-painel': Painel,
+    'imagem-responsiva': ImagemResponsiva
+  },
+
+  data() {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      titulo: 'Alurapic',
+      fotos: [],
+      filtro: ''
     }
+  },
+  computed: {
+    
+    fotosComFiltro(){
+      if(this.filtro){
+          /*filtrar */
+        let exp = new RegExp(this.filtro.trim(), 'i');
+        return this.fotos.filter(foto => exp.test(foto.titulo));
+      
+      } else{
+        return this.fotos;
+      }
+    }
+  },
+
+  created(){
+
+    this.$http.get('http://localhost:3000/v1/fotos')
+      .then(res => res.json())
+      .then(fotos => this.fotos = fotos, err => console.log(err));
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  .centralizado {
+    text-align: center;
+  }
 
-h1, h2 {
-  font-weight: normal;
-}
+  .corpo {
+    font-family: Helvetica, sans-serif;
+    margin: 0 auto;
+    width: 96%;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  .lista-fotos {
+    list-style: none;
+  }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+  .lista-fotos .lista-fotos-item {
+    display: inline-block;
+  }
+  
+  .filtro {
+    display: block;
+    width: 100%;
+  }
 
-a {
-  color: #42b983;
-}
 </style>
