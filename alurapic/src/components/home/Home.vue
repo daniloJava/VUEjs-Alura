@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <h1 class="centralizado" >{{ titulo }}</h1>
+    <h1 class="centralizado" v-meu-transform:rotate.animate="30" >{{ titulo }}</h1>
 
     <input type="search" class="filtro" v-on:input="filtro = $event.target.value" placeholder="filtre pelo título da foto">
 
@@ -9,7 +9,7 @@
 
         <li class="lista-fotos-item" v-for="foto of fotosComFiltro">
           <meu-painel :titulo="foto.titulo">
-            <imagem-responsiva :url="foto.url" :titulo="foto.titulo"/>
+            <imagem-responsiva v-meu-transform:scale.animate="1.5" :url="foto.url" :titulo="foto.titulo"/>
             <meu-botao rotulo="remover"  tipo="button" :confirmacao="true" @botaoAtivado="remove(foto)" estilo="perigo"></meu-botao>
           </meu-painel>
         </li>

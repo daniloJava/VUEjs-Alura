@@ -60,5 +60,8 @@ export default {
   transition: opacity .4s
 }
 
+.painel-corpo {
+    overflow: hidden;
+  }
 
 </style>
